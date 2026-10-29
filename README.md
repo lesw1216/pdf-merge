@@ -4,19 +4,13 @@
 
 ## 요구 사항
 
-- Python 3 (표준 라이브러리만 사용)
-- Ghostscript (`gs`)
+- Python 3
+- [pypdf](https://pypi.org/project/pypdf/)
 
-설치 확인:
-
-```bash
-gs --version
-```
-
-설치되어 있지 않다면:
+설치:
 
 ```bash
-sudo apt install ghostscript
+pip install pypdf
 ```
 
 ## 사용법
@@ -63,5 +57,5 @@ sudo apt install ghostscript
 
 - 입력 폴더 바로 아래의 `.pdf` 파일만 대상이며, 하위 폴더는 탐색하지 않습니다.
 - 출력 파일이 입력 폴더 안에 있어도 입력에서 제외됩니다.
-- Ghostscript로 PDF를 다시 만들기 때문에 원본의 북마크나 폼 필드는 유지되지 않을 수 있습니다.
+- 각 파일의 이름(확장자 제외)이 북마크로 추가되고, 원본 북마크는 그 아래에 유지됩니다.
 - 출력 경로에 같은 이름의 파일이 있으면 덮어씁니다.

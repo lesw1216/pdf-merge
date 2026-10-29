@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 """폴더 안의 PDF 파일들을 이름 오름차순(자연 정렬)으로 하나의 PDF로 합친다.
 
-Ghostscript(gs)가 필요하다. 사용법:
+pypdf가 필요하다. 사용법:
     ./merge_pdfs.py <입력 폴더> [-o merged.pdf] [--lexical]
 """
 import argparse
 import re
-import shutil
-import subprocess
 import sys
 from pathlib import Path
+
+try:
+    from pypdf import PdfWriter
+except ImportError:
+    PdfWriter = None
 
 
 def natural_key(path: Path):
@@ -27,8 +30,8 @@ def main() -> int:
                         help="자연 정렬 대신 단순 문자열 순서로 정렬")
     args = parser.parse_args()
 
-    if shutil.which("gs") is None:
-        print("Ghostscript(gs)가 설치되어 있지 않습니다.", file=sys.stderr)
+    if PdfWriter is None:
+        print("pypdf가 설치되어 있지 않습니다. (pip install pypdf)", file=sys.stderr)
         return 1
     if not args.input_dir.is_dir():
         print(f"폴더를 찾을 수 없습니다: {args.input_dir}", file=sys.stderr)
@@ -45,13 +48,15 @@ def main() -> int:
     for i, f in enumerate(files, 1):
         print(f"{i:>3}. {f.name}")
 
-    cmd = ["gs", "-q", "-dNOPAUSE", "-dBATCH", "-dSAFER",
-           "-sDEVICE=pdfwrite", f"-sOutputFile={output}",
-           *map(str, files)]
-    result = subprocess.run(cmd)
-    if result.returncode != 0:
-        print("병합 중 오류가 발생했습니다.", file=sys.stderr)
-        return result.returncode
+    try:
+        with PdfWriter() as writer:
+            for f in files:
+                # 파일명을 북마크 제목으로 달고, 원본 북마크는 그 아래로 유지
+                writer.append(f, outline_item=f.stem, import_outline=True)
+            writer.write(output)
+    except Exception as e:
+        print(f"병합 중 오류가 발생했습니다: {e}", file=sys.stderr)
+        return 1
     print(f"완료: {output}")
     return 0
 
