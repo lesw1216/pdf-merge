@@ -11,6 +11,8 @@
 
 ```bash
 pip install pypdf
+# pip가 없는 Debian/Ubuntu 계열
+sudo apt install python3-pypdf
 ```
 
 ## 사용법
