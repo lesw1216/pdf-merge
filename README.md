@@ -18,7 +18,7 @@ sudo apt install python3-pypdf
 ## 사용법
 
 ```bash
-./merge_pdfs.py <입력 폴더> [-o 출력파일] [--lexical]
+./merge_pdfs.py <입력 폴더> [-o 출력파일] [--lexical] [--no-auto-rotate]
 ```
 
 | 옵션 | 설명 | 기본값 |
@@ -26,6 +26,7 @@ sudo apt install python3-pypdf
 | `<입력 폴더>` | 합칠 PDF들이 들어 있는 폴더 | (필수) |
 | `-o`, `--output` | 결과 PDF 경로 | `<입력 폴더>/merged.pdf` |
 | `--lexical` | 자연 정렬 대신 단순 문자열 순서로 정렬 | 꺼짐 |
+| `--no-auto-rotate` | 글자 방향에 따른 페이지 자동 회전을 끔 | 꺼짐 (자동 회전) |
 
 ### 예시
 
@@ -48,6 +49,12 @@ sudo apt install python3-pypdf
   3. file10.pdf
 완료: /home/user/docs/merged.pdf
 ```
+
+## 가로 도면 자동 회전
+
+세로 용지에 가로 도면이 옆으로 누워 저장된 PDF가 있습니다(페이지 크기는 세로, 회전값 0, 글자만 세로 방향). 이런 파일은 그대로 합치면 가로 도면이 옆으로 누워 보입니다.
+
+각 페이지의 글자 방향을 글자 수 기준 다수결로 판단해, 글자가 가로로 읽히도록 페이지를 회전합니다. 글자가 없는 페이지(스캔본 등)는 건드리지 않습니다. 끄려면 `--no-auto-rotate`를 씁니다.
 
 ## 정렬 방식
 
